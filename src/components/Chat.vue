@@ -6,6 +6,7 @@
         <ul class="messages" v-chat-scroll>
           <li v-for="message in messages"
               :key="message.id">
+            <i class="material-icons delete" v-if="message.name === name" @click="deleteMessage(message.id)">delete</i>
             <span class="teal-text">{{message.name}}</span>
             <span class="grey-text text-darken-3">{{message.content}}</span>
             <span class="grey-text time">{{message.timestamp}}</span>
@@ -33,6 +34,15 @@
     data() {
       return {
         messages: []
+      }
+    },
+    methods: {
+      deleteMessage(id) {
+        db.collection('messages')
+          .doc(id)
+          .delete()
+          .then(() => this.messages = this.messages.filter(message => message.id !== id))
+          .catch(error => console.error(error));
       }
     },
     created() {
@@ -87,5 +97,11 @@
 
   .chat .messages::-webkit-scrollbar-thumb {
     background: #aaa;
+  }
+
+  .chat .delete {
+    color: #ccc;
+    font-size: 1.2em;
+    cursor: pointer;
   }
 </style>
