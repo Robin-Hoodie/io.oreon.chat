@@ -1,6 +1,6 @@
 # Oreon Chat
 
-Realtime chat application written in Vue!
+Realtime chat application written in Vue! Create chatrooms and invite your friends or join random chatrooms!
 
 
 On the back end a firestore database is hosted on Firebase while [Materialize](https://materializecss.com/) is used as the Material Design CSS framework 
