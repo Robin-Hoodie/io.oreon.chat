@@ -2,10 +2,12 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Welcome from '@/components/Welcome'
 import Chat from '@/components/Chat'
+import CreateChat from '@/components/CreateChat'
 
 Vue.use(Router);
 
-const beforeEnterChat = (to, from, next) => {
+const beforeEnter = (to, from, next) => {
+  console.log(to);
   if (to.params.name) {
     next();
   } else {
@@ -23,11 +25,16 @@ export default new Router({
       component: Welcome
     },
     {
-      path: '/chat',
+      path: '/chat/:chatroomId',
       name: Chat.name,
       component: Chat,
       props: true,
-      beforeEnter: beforeEnterChat
+      beforeEnter
+    },
+    {
+      path: '/create-chat',
+      name: CreateChat.name,
+      component: CreateChat
     }
   ],
   mode: 'history'

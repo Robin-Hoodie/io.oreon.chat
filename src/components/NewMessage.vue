@@ -6,7 +6,8 @@
              name="new-message"
              id="new-message"
              v-model="newMessage">
-      <p class="red-text" v-if="feedback">{{this.feedback}}</p>
+      <p class="red-text"
+         v-if="feedback">{{this.feedback}}</p>
     </form>
   </div>
 </template>
@@ -14,10 +15,9 @@
 <script>
   import db from '@/firebase/init'
 
-
   export default {
     name: 'NewMessage',
-    props: ['name'],
+    props: ['name', 'chatroomId'],
     data() {
       return {
         newMessage: '',
@@ -27,15 +27,16 @@
     methods: {
       addMessage() {
         if (this.newMessage) {
-          this.feedback = '';
           db.collection('messages')
             .add({
               content: this.newMessage,
               timestamp: Date.now(),
-              name: this.name
+              name: this.name,
+              chatroomId: this.chatroomId
             })
-            .then(() => this.newMessage = '')
             .catch(error => console.error(error));
+          this.feedback = '';
+          this.newMessage = '';
         } else {
           this.feedback = 'You must enter a message in order to send one'
         }

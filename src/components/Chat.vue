@@ -1,42 +1,68 @@
 <template>
   <div class="chat container">
-    <h2 class="center-align teal-text">Oreon Chat</h2>
+    <h2 class="center-align teal-text"
+        v-if="chatroom">{{chatroom.name}}</h2>
     <div class="card">
       <div class="card-content">
-        <ul class="messages" v-chat-scroll>
+        <ul class="messages"
+            v-chat-scroll
+            v-if="messages.length">
           <li v-for="message in messages"
               :key="message.id">
-            <i class="material-icons delete" v-if="message.name === name" @click="deleteMessage(message.id)">delete</i>
+            <i class="material-icons delete"
+               v-if="message.name === name"
+               @click="deleteMessage(message.id)">delete</i>
             <span class="teal-text">{{message.name}}</span>
             <span class="grey-text text-darken-3">{{message.content}}</span>
             <span class="grey-text time">{{message.timestamp}}</span>
           </li>
         </ul>
+        <p v-if="!messages.length"
+           class="center-align no-messages">
+          Start typing to send a message
+        </p>
       </div>
       <div class="card-action">
-        <NewMessage :name="this.name"/>
+        <NewMessage :name="this.name"
+                    :chatroomId="this.chatroomId"/>
       </div>
     </div>
+    <p>
+      Invite a friend to this chatroom by sharing the following link:
+    </p>
+    <SharingLink :chatroomId="chatroomId"/>
+    <router-link :to="{name: 'Welcome'}">
+      <button class="btn red">
+        Back to welcome
+      </button>
+    </router-link>
   </div>
 </template>
 
 <script>
   import NewMessage from '@/components/NewMessage'
+  import SharingLink from '@/components/SharingLink'
   import db from '@/firebase/init'
   import moment from 'moment'
 
   export default {
     name: 'Chat',
     components: {
-      NewMessage
+      NewMessage,
+      SharingLink
     },
-    props: ['name'],
+    props: ['name', 'chatroomId'],
     data() {
       return {
-        messages: []
+        chatroom: null,
+        messages: [],
+        sharingLink: ''
       }
     },
     methods: {
+      copyLinkToClipboard() {
+
+      },
       deleteMessage(id) {
         db.collection('messages')
           .doc(id)
@@ -46,7 +72,19 @@
       }
     },
     created() {
+      db.collection('chatroom')
+        .doc(this.chatroomId)
+        .get()
+        .then(chatroom => {
+          this.chatroom = {
+            id: this.chatroomId,
+            ...chatroom.data()
+          };
+          this.sharingLink = `${window.location.origin}/?chatroomId=${this.chatroom.id}`;
+        })
+        .catch(error => console.error(error));
       let ref = db.collection('messages')
+        .where('chatroomId', '==', this.chatroomId)
         .orderBy('timestamp');
       ref.onSnapshot(snapshot => {
         snapshot.docChanges()
@@ -103,5 +141,9 @@
     color: #ccc;
     font-size: 1.2em;
     cursor: pointer;
+  }
+
+  .chat .no-messages {
+    color: #aaa;
   }
 </style>
