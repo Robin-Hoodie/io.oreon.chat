@@ -5,6 +5,12 @@ Realtime chat application written in Vue! Create chatrooms and invite your frien
 
 On the back end a firestore database is hosted on Firebase while [Materialize](https://materializecss.com/) is used as the Material Design CSS framework 
 
+## Live version
+
+A live version of the project can be interacted with at https://chat.oreon.io
+
+As this is just a pet project of mine, no authentication is included and you're free to send chat messages to try this out. Please do be mindful as not to spam the whole channel
+
 ## Local setup
 
 - Clone project
@@ -28,8 +34,4 @@ export default firebaseApp.firestore();
 - Serve with hot reload at `localhost:8080` with `npm run dev` or `yarn dev`
 - Build for production with `npm run build` or `yarn build`
 
-## Live project
 
-A live version of the project can be interacted with at https://chat.oreon.io
-
-As this is just a pet project of mine, no authentication is included and you're free to send chat messages to try this out. Please do be mindful as not to spam the whole channel
